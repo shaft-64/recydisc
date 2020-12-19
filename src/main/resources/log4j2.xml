@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+    <!--
+        配置日志文件的输出位置及格式
+    -->
+    <Appenders>
+
+        <!--
+            配置输出位置
+                Console表示控制台输出
+        -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <!--
+                指定输出格式
+            -->
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+
+
+        <!--        <File name="fileLog" fileName="c:/mybatis.log">-->
+        <!--            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>-->
+        <!--        </File>-->
+    </Appenders>
+
+    <!--
+        配置使用当前日志的位置
+       -->
+    <Loggers>
+
+        <!--
+            指定当前应用中那个包使用log4j进行日志管理
+            并指定日期级别及所引用的日志配置
+            Log4j2中的日志级别有以下几种(低->高):
+                1.TRACE:跟踪级
+                2.DEBUG:调试级别
+                3.INFO:消息级别
+                4.WARN:警告级别
+                5.ERROR:错误级
+                6.Fatal(致命级)
+            设置的级别低则该级别及它以上级别的信息都会输出
+            设置的级别一下的级别不会输出
+        -->
+        <Logger name="" level="trace" additivity="false">
+            <!--引入控制台日志配置-->
+            <AppenderRef ref="Console"/>
+            <!--引入日志文件日志配置-->
+            <!--            <AppenderRef ref="fileLog"/>-->
+        </Logger>
+
+        <!--
+            日志文件的根配置
+            如果没有指定具体的配置，则根据根配置的日志输出
+            level：表示日志级别
+        -->
+        <Root level="trace">
+            <!--日志引用-->
+            <AppenderRef ref="Console"/>
+            <!--引入日志文件日志配置-->
+            <!--            <AppenderRef ref="fileLog"/>-->
+        </Root>
+
+    </Loggers>
+</Configuration>
