@@ -22,11 +22,12 @@ public class DownLoadServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         //得到要下载的文件名
+        String rootDir="C:\\NetDisk";
         String fileName=req.getParameter("fileName");
         System.out.println("hashName:"+fileName);
         fileName=new String(fileName.getBytes("iso8859-1"),"UTF-8");
         //得到上传文件的根目录
-        String fileSaveRootPath=this.getServletContext().getRealPath("/WEB-INF/upload");
+        String fileSaveRootPath=rootDir+"\\Resources";
 
         //处理文件名
         String realName=fileName.substring(fileName.indexOf("_")+1);

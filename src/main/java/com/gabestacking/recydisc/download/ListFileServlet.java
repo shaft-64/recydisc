@@ -19,8 +19,10 @@ public class ListFileServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        String rootDir="C:\\NetDisk";
         //获取文件上传的目录
-        String uploadFilePath=this.getServletContext().getRealPath("/WEB-INF/upload");
+        String uploadFilePath=rootDir+"\\Resources";
+        System.out.println(uploadFilePath);
 
         //存储要下载的文件名
         Map<String,String> fileMap=new HashMap<>();
@@ -48,6 +50,7 @@ public class ListFileServlet extends HttpServlet {
             }
         }else{
             String realName=file.getName().substring(file.getName().lastIndexOf("_")+1);
+
             fileMap.put(file.getName(),realName);
         }
     }

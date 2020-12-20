@@ -24,27 +24,23 @@ public class UploadServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        //得到上传文件的保存目录，将上传的文件存放于WEB-INF目录下，不允许外界直接访问，保证上传文件的安全
+        String rootDir="C:\\NetDisk";
+        //文件保存位置
+        //String savePath = this.getServletContext().getRealPath("/WEB-INF/upload");
+        String savePath=rootDir+"\\Resources";
+        //文件上传缓冲区
+        //String tempPath = this.getServletContext().getRealPath("/WEB-INF/temp");
 
-        String savePath = this.getServletContext().getRealPath("/WEB-INF/upload");
+        String tempPath=rootDir+"\\temp";
 
-        System.out.println(savePath);
+        File file = new File(savePath);
+        //初始化存储空间
+        initStorage(file);
 
-        //上传时生成的临时文件保存目录
+        file=new File(tempPath);
 
-        String tempPath = this.getServletContext().getRealPath("/WEB-INF/temp");
+        initStorage(file);
 
-        File file = new File(tempPath);
-
-        File file2 = new File(savePath);
-
-        if(!file.exists()&&!file.isDirectory()){
-
-            System.out.println("目录或文件不存在！");
-
-            file.mkdir();
-
-        }
 
         //消息提示
 
@@ -54,37 +50,31 @@ public class UploadServlet extends HttpServlet {
 
             //使用Apache文件上传组件处理文件上传步骤：
 
-            System.out.println("创建DiskFileItemFactory工厂");
+            System.out.println("创建DiskFileItemFactory工厂......");
 
             DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
 
-            System.out.println("设置工厂的缓冲区的大小");
+            System.out.println("设置工厂的缓冲区的大小......");
 
             diskFileItemFactory.setSizeThreshold(1024*100);
 
-            System.out.println("设置上传时生成的临时文件的保存目录");
+            System.out.println("设置上传时生成的临时文件的保存目录......");
 
             diskFileItemFactory.setRepository(file);
 
-            System.out.println("创建文件上传解析器");
+            System.out.println("创建文件上传解析器......");
 
             ServletFileUpload fileUpload = new ServletFileUpload(diskFileItemFactory);
 
-            System.out.println("解决上传文件名的中文乱码");
+            System.out.println("解决上传文件名的中文乱码......");
 
             fileUpload.setHeaderEncoding("UTF-8");
 
             //监听文件上传进度
 
-            fileUpload.setProgressListener(new ProgressListener(){
-
-                public void update(long pBytesRead, long pContentLength, int arg2) {
-
-                    System.out.println("文件大小为：" + pContentLength + ",当前已处理：" + pBytesRead);
-
-                }
-
-            });
+            fileUpload.setProgressListener(
+                    (pBytesRead, pContentLength, arg2) ->
+                            System.out.println( pBytesRead+"/"+(double)pContentLength/1024/1024+"MB" ));
 
             //3、判断提交上来的数据是否是上传表单的数据
 
@@ -93,8 +83,7 @@ public class UploadServlet extends HttpServlet {
                 return;
             }
 
-            //设置上传单个文件的大小的最大值，目前是设置为1024*1024字节，也就是1MB
-
+            //单个文件大小上限 100mb
             fileUpload.setFileSizeMax(1024*1024*100);
 
             //设置上传文件总量的最大值，最大值=同时上传的多个文件的大小的最大值的和，目前设置为10MB
@@ -274,6 +263,14 @@ public class UploadServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doPost(req, resp);
+    }
+
+
+
+    public void initStorage(File file){
+        if(!file.exists()&&!file.isDirectory()){
+            file.mkdir();
+        }
     }
 
     public String mkFileName(String fileName){
