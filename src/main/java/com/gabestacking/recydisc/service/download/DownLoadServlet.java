@@ -1,4 +1,4 @@
-package com.gabestacking.recydisc.download;
+package com.gabestacking.recydisc.service.download;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,26 +22,16 @@ public class DownLoadServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         //得到要下载的文件名
-        String rootDir="C:\\NetDisk";
+        String username="rainyun";
+        String rootDir="D:\\NetDisk";
         String fileName=req.getParameter("fileName");
-        System.out.println("hashName:"+fileName);
         fileName=new String(fileName.getBytes("iso8859-1"),"UTF-8");
-        //得到上传文件的根目录
         String fileSaveRootPath=rootDir+"\\Resources";
-
-        //处理文件名
-        String realName=fileName.substring(fileName.indexOf("_")+1);
-
-
-
-        //通过文件名找到文件所在目录
-        String path=findFileSavePathByFileName(fileName,fileSaveRootPath);
-
+        String path=fileSaveRootPath;
         //FIXME
-        System.out.println(path);
-        System.out.println(path+File.separator+fileName);
-        File file=new File(path+File.separator+fileName);
+        String fullPath=path+"\\"+username+"\\"+fileName;
 
+        File file=new File(fullPath);
 
         if(!file.exists()){
             req.setAttribute("message","您要下载的资源已被删除!!!");
@@ -49,11 +39,11 @@ public class DownLoadServlet extends HttpServlet {
             return;
         }
 
-        System.out.println(URLEncoder.encode(realName, "UTF-8"));
+        resp.setHeader("content-disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
 
-        resp.setHeader("content-disposition", "attachment;filename=" + URLEncoder.encode(realName, "UTF-8"));
+        FileInputStream in=new FileInputStream(path+File.separator+username+File.separator+fileName);
 
-        FileInputStream in=new FileInputStream(path+File.separator+fileName);
+
 
         OutputStream os=resp.getOutputStream();
 
@@ -68,30 +58,5 @@ public class DownLoadServlet extends HttpServlet {
         in.close();
 
         os.close();
-
-
-
-    }
-
-    public String findFileSavePathByFileName(String fileName,String fileSaveRootPath){
-
-        int hashcode = fileName.hashCode();
-
-        int dir1 = hashcode&0xf;
-
-        int dir2 = (hashcode&0xf0)>>4;
-
-        String dir = fileSaveRootPath + "\\" + dir1 + "\\" + dir2;
-
-        File file = new File(dir);
-
-        if(!file.exists()){
-
-            file.mkdirs();
-
-        }
-
-        return dir;
-
     }
 }

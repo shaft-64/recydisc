@@ -1,4 +1,4 @@
-package com.gabestacking.recydisc.download;
+package com.gabestacking.recydisc.service.download;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+
 @WebServlet("/servlet/listFileServlet")
 public class ListFileServlet extends HttpServlet {
     @Override
@@ -19,10 +21,11 @@ public class ListFileServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String rootDir="C:\\NetDisk";
+
+
+        String rootDir="D:\\NetDisk";
         //获取文件上传的目录
-        String uploadFilePath=rootDir+"\\Resources";
-        System.out.println(uploadFilePath);
+        String uploadFilePath=rootDir+"\\Resources\\rainyun";
 
         //存储要下载的文件名
         Map<String,String> fileMap=new HashMap<>();
@@ -49,7 +52,7 @@ public class ListFileServlet extends HttpServlet {
                 fileList(f,fileMap);
             }
         }else{
-            String realName=file.getName().substring(file.getName().lastIndexOf("_")+1);
+            String realName=file.getName();
 
             fileMap.put(file.getName(),realName);
         }
